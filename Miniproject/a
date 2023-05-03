@@ -1,1 +1,41 @@
+3. Start with customer management system
+Supply Options
+1. Sign up
+2. Sign in
+i/p : email n password
+3. Change password
+4. Un subscribe customer
+5. Display all customers.
 
+Design 
+Identify the classes/enums involved
+1. ServicePlan : enum
+ServicePlan charges : 
+SILVER : 1000 
+GOLD : 2000
+DIAMOND : 5000
+PLATINUM : 10000
+
+
+2. Customer class (core class)
+state(non static data members : instance vars)  : customer id(int) ,first name, last name (string),email(string),password(string),registrationAmount(double),dob(LocalDate),plan(ServicePlan : enum)
+idGenerator : static
+ctors 
+1. all args ctor
+2. PK based ctor
+
+override : toString n equals
+
+3. custom exception class
+4. validation rules
+no dup customers
+Hint : public static void checkForDup(....)
+{
+api : contains
+}
+
+validate plan
+reg amount must match with the plan
+customer's age  must be > 21 : lab work
+
+5. Tester
