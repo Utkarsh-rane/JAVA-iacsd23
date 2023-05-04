@@ -14,15 +14,15 @@ public class CustomerValidationRule {
 	public static Customer ValidateAll(String firstname, String lastname, String email, String passwd, Double regAmt,
 			String dob,String plan,List<Customer> cust) throws InvalidCustomerException
 	{
-		validateEmail(email,passwd,cust);
+		validateEmail(email,cust);
 		
 		LocalDate d=LocalDate.parse(dob);
-		
+	
 		ServicePlan sp= validatePlanandAmt(plan,regAmt);
 		validateage(dob);
-		return new Customer( firstname,  lastname,  email , passwd, regAmt,
-			 d, sp);
+		return new Customer( firstname,  lastname,  email , passwd, regAmt,d, sp);
 	}
+	
 	//Chacking Service plan validating and parse
 	private static ServicePlan validatePlanandAmt(String plan,double regAmt) throws InvalidCustomerException 
 	{
@@ -34,10 +34,10 @@ public class CustomerValidationRule {
 	}
 	
      //email dublication checking
-	private static void validateEmail(String email,String passwd,List<Customer> cust) throws InvalidCustomerException
+	private static void validateEmail(String email,List<Customer> cust) throws InvalidCustomerException
 	{
 		
-		Customer cd=new Customer(email,passwd);
+		Customer cd=new Customer(email);
 		
 			if(cust.contains(cd))
 			{
@@ -54,6 +54,19 @@ public class CustomerValidationRule {
 			throw new InvalidCustomerException("you are under age");
 		System.out.println("you can proced");
 	}
-
+   // add a static method for customer login
+	public static Customer customerlogin(String email,String passwd,List<Customer> cust) throws InvalidCustomerException
+	{
+		int index= cust.indexOf(new Customer(email));
+        
+        if(index==-1)
+        	throw new InvalidCustomerException("invalid email ");
+       
+            Customer ci=cust.get(index);
+            if(!passwd.equals(ci.getPasswd()))
+        	throw new InvalidCustomerException("invalid password ");
+        	
+        return ci;
+	}
 	
 }
