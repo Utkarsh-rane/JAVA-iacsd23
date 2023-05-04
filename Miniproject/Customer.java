@@ -2,7 +2,7 @@ package com.app.customer;
 
 import java.time.LocalDate;
 
-public class Customer {
+public class Customer implements Comparable<Customer> {
 	private  int custId;
 	private String firstname;
 	private String lastname;
@@ -46,6 +46,15 @@ public class Customer {
 
 
 
+	public Double getRegAmt() {
+		return regAmt;
+	}
+	public LocalDate getDob() {
+		return dob;
+	}
+	public void setDob(LocalDate dob) {
+		this.dob = dob;
+	}
 	public String getPasswd() {
 		return passwd;
 	}
@@ -71,8 +80,14 @@ public class Customer {
 	{
 		
 		if(o instanceof Customer)
-			return this.email.equals(((Customer) o).email) || (this.email.equals(((Customer) o).email) && this.passwd.equals(((Customer)o).passwd));
+			return this.email.equals(((Customer) o).email) ;
+					//(this.email.equals(((Customer) o).email) && this.passwd.equals(((Customer)o).passwd));
 		return false;
      }
+	@Override
+	public int compareTo(Customer o) {
+		System.out.println("inside compareto");
+		return this.email.compareTo(o.email);
+	}
 	
 }
