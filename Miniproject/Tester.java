@@ -97,7 +97,7 @@ public class Tester {
 									public int compare(Customer c1, Customer c2) {
 										int ret=c1.getDob().compareTo(c2.getDob());
 										if(ret==0)
-										return (c1.getRegAmt()).compareTo(c2.getRegAmt());
+										return ((Double)c1.getRegAmt()).compareTo(c2.getRegAmt());
 										
 										return ret;
 									}
