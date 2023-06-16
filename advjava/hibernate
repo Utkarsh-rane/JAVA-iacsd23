@@ -1,0 +1,94 @@
+Hibernate :auto persistence provider
+
+Other persistence providers : iBatis,Kodo, EclipseLink,TopLink,JDO
+
+Spring Boot frmwork : default persistence provider = Hibernate
+
+Open source framework : founded by Gavin King
+
+Intermediate layer between Java app(standalone desk top based / web app ) n DB
+
+
+Why Hibernate ? (refer to readme)
+1. open source n light weight
+2. supports cache (L1 , L2 , query cache) : faster performance
+3. auto table creation.
+4. simplifies join queries
+5. 100 % DB independent (HQL/JPQL ---Hibernate : DB dialect -- converts DB independent queries in DB specific syntax)
+Hibernate 5.x onwards : no need to specifiy DB dialect property in config file (hibernate.cfg.xml : run time classpath)
+
+6. Hibernate developer doesn't have 
+ to go to DB level , DB ,table ,cols , rows
+ sql
+ set up the db conn , prepare stmts (st/pst/cst)
+ exec queries : process RST : convert it into pojo / collection of POJOs
+All of above will be automated by Hibernate
+
+7. JDBC : fixed db conn.(new separate conn per call to DriverManager.getConnection)
+Hibernate creates :internal connection pool => collection of DB connections
+when : hibernate framework booting time
+at the time of creation of singleton SessionFactory(SF)
+at the time confgure() -- hibernate.cfg.xml(location : by default run time class path)  is parsed : 
+DB config details -- drvr class , db url , user name , pwd
+hibernate.connection.pool_size= 10 (max size)
+
+In DAO layer : When you invoke , open session n begin tx : db conn is pooled out -- wrapped in Session instance n reted to caller.
+try
+CRUD work (save/get/JPQL/update/delete...)
+end of try --commit n re throw the exc to the caller
+catch --RunTimeExc --rollback
+finally : session .close ---pooled out db cn simply rets to the pool : so that the same conn can be REUSED for some other request.
+
+8.Solves the important issue of  Impedance mismatch in DBMS
+Object world (java objs in heap , inheritance , association , polymorphism) ----- RDBMS (table , row cols ,E-R,FKs,join tables...)
+
+9. Exception translation mechanism
+Hibernate translates checked SQL excs --un checked hibernate excs (org.hibernate.HibernateException) : so that prog is not forced to handle the same. 
+
+& many more advantages...
+
+Hibernate architecture
+refer to a diagram
+day7-data\day7_help\hibernate-help\diags\hibernate overview.png
+
+Important Blocks 
+1.org.hibernate.Session : interface (imple classes : hibernate core jar)
+Represents : Main runtime i/f for prog interaction with hibernate
+Supplies CRUD APIs(eg : save, persist, get,load, createQuery,update,delete....)
+Represents : wrapper around pooled out db connection. 
+It has INHERENTLY L1 cache(persistence ctx)  associated with it.
+DAO layer creates session instance as per demand(one per request for CRUD operation)
+light weight , thread un safe object
+NO NEED for accessing the session in synchronized manner : since different thrd representing different clnt requests , will have their own session object
+
+2. org.hibernate.SessionFactory : interface (imple classes : hibernate core jar)
+JOB : to provide session objects(openSession / getCurrentSession)
+singleton instance per DB / application
+immutable , inherently thread safe
+Represents : DB sepecific config , including connection pool.
+It has L2 cache associated with it : MUST be configured explcitly
+
+3. Configuration : org.hibernate.cfg.Configuration class.
+Provider of SF
+
+4. Additional APIs
+, Transaction,Query,CriteriaQuery ...
+
+
+5. hibernate.cfg.xml : centralized configuration file , to create SessionFactory(i.e bootstrapping hibernate framework)
+
+Important property : 
+hibernate.hbm2ddl.auto=update
+Hibernate checks if table is not yet created for a POJO : create a new table.
+BUT if table alrdy exists : continues with the existing table.
+
+5.5 HibernateUtils --- to create singleton immutable SF instance
+6. Refer to EMS (emp management system E-R diagram)
+day7-data\help\day7_help\EMS E-R.png
+
+emps table 
+emp_id(PK) ,first_name,last_name,email(unique),password,join_date,emp_type(full_time/part_time/contract...)
+
+We are going to confirm auto table creation
+POJO ---> Table approach
+Create POJO class : Employee
